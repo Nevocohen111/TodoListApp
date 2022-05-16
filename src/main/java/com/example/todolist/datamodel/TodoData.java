@@ -46,6 +46,7 @@ public class TodoData {
         }else{
             todoItems = new ArrayList<>();
             todoItems.add(item);
+            System.out.println("Error adding item");
         }
 
 
