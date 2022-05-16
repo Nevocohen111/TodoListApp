@@ -35,10 +35,13 @@ public class HelloController {
     private ContextMenu listContextMenu;
     @FXML
     private ToggleButton filterToggleButton;
+    @FXML
+    private TextField searchTextField;
     private FilteredList<TodoItem> filteredList;
 
     private Predicate<TodoItem> wantAllItems;
     private Predicate<TodoItem> wantTodayItems;
+
 
 
 
@@ -180,6 +183,33 @@ public class HelloController {
     @FXML
     public void handleExit() {
         Platform.exit();
+    }
+    @FXML
+    public void handleSearchButton() {
+        TodoItem selectedItem = todoListView.getSelectionModel().getSelectedItem();
+        if(searchTextField.getText().isEmpty()) {
+            filteredList.setPredicate(wantAllItems);
+        } else {
+            filteredList.setPredicate(getPredicate(selectedItem));
+        }
+        if(filteredList.isEmpty()) {
+            itemDetailsTextArea.clear();
+            deadlineLabel.setText("");
+
+        } else if(filteredList.contains(selectedItem)) {
+            todoListView.getSelectionModel().select(selectedItem);
+        }else{
+            todoListView.getSelectionModel().selectFirst();
+        }
+    }
+
+    public Predicate<TodoItem> getPredicate(TodoItem item) {
+        return new Predicate<TodoItem>() {
+            @Override
+            public boolean test(TodoItem todoItem) {
+                return todoItem.getDetails().toLowerCase().contains(searchTextField.getText().toLowerCase());
+            }
+        };
     }
 
 }

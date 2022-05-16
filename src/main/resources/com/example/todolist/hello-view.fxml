@@ -34,6 +34,7 @@
                      <Tooltip text="Up arrow key: show today's items/Down arrow key: show all items"/>
                   </tooltip>
                </ToggleButton>
+               <TextField fx:id="searchTextField" prefColumnCount="20" onAction="#handleSearchButton" promptText="Search"/>
             </HBox>
          </ToolBar>
       </VBox>
