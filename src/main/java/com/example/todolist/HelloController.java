@@ -201,15 +201,13 @@ public class HelloController {
         }else{
             todoListView.getSelectionModel().selectFirst();
         }
+        if(!filteredList.contains(selectedItem)) {
+            filteredList.setPredicate(wantAllItems);
+        }
     }
 
     public Predicate<TodoItem> getPredicate(TodoItem item) {
-        return new Predicate<TodoItem>() {
-            @Override
-            public boolean test(TodoItem todoItem) {
-                return todoItem.getDetails().toLowerCase().contains(searchTextField.getText().toLowerCase());
-            }
-        };
+        return todoItem -> todoItem.getDetails().toLowerCase().contains(searchTextField.getText().toLowerCase());
     }
 
 }
