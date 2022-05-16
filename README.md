@@ -1,1 +1,1 @@
-# TodoListApp u can eather Open in via EXE or JAR which inside out/artifacts folder,enjoy!
+# in order to acivate the app use the jar file inside of the artifacts folder which is inside of the out folder.
