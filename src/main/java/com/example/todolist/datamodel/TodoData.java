@@ -10,7 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TodoData {
     private static TodoData instance = new TodoData();
@@ -32,7 +34,21 @@ public class TodoData {
         return todoItems;
     }
     public void addTodoItem(TodoItem item) {
-        todoItems.add(item);
+        if(item.getDetails().isEmpty()) {
+            item.setDetails("");
+        }else if(item.getShortDescription().isEmpty()) {
+            item.setShortDescription("");
+        }else if(item.getDeadline() == null) {
+            item.setDeadline(LocalDate.now());
+        }
+        if(todoItems != null && item.getDeadline() != null) {
+            todoItems.add(item);
+        }else{
+            todoItems = new ArrayList<>();
+            todoItems.add(item);
+        }
+
+
     }
 
  /*   public void setTodoItems(List<TodoItem> todoItems) {
@@ -66,6 +82,8 @@ public class TodoData {
                 writer.write(String.format("%s\t%s\t%s", item.getShortDescription(), item.getDetails(), item.getDeadline().format(formatter)));
                 writer.newLine();
             }
+        }catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
         }
     }
 
