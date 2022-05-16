@@ -24,12 +24,12 @@ public class HelloApplication extends Application {
     public void stop() throws Exception {
         try {
             TodoData.getInstance().storeTodoItems();
-        }catch (IOException e){
-            e.printStackTrace();
+        }catch (NullPointerException e){
+            System.out.println("No data to save");
         }
     }
     @Override
-    public void init() throws Exception {
+    public void init() {
         try {
             TodoData.getInstance().loadTodoItems();
         }catch (IOException e){

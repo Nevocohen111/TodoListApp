@@ -58,7 +58,11 @@ public class HelloController {
                 TodoItem item = todoListView.getSelectionModel().getSelectedItem();
                 itemDetailsTextArea.setText(item.getDetails());
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-                deadlineLabel.setText(df.format(item.getDeadline()));
+                try {
+                    deadlineLabel.setText(df.format(item.getDeadline()));
+                } catch (NullPointerException e) {
+                    deadlineLabel.setText("");
+                }
             }
         });
         wantAllItems = todoItem -> true;
@@ -79,17 +83,21 @@ public class HelloController {
                     @Override
                     protected void updateItem(TodoItem item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (empty) {
-                            setText(null);
-                        } else {
-                            setText(item.getShortDescription());
-                            if (item.getDeadline().isBefore(LocalDate.now())) {
-                                setTextFill(Color.RED);
-                            } else if (item.getDeadline().equals(LocalDate.now())) {
-                                setTextFill(Color.GREEN);
-                            }else{
-                                setTextFill(Color.BLACK);
+                        try {
+                            if (empty) {
+                                setText(null);
+                            } else {
+                                setText(item.getShortDescription());
+                                if (item.getDeadline().isBefore(LocalDate.now())) {
+                                    setTextFill(Color.RED);
+                                } else if (item.getDeadline().equals(LocalDate.now())) {
+                                    setTextFill(Color.GREEN);
+                                } else {
+                                    setTextFill(Color.BLACK);
+                                }
                             }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
                         }
                     }
                 };
@@ -118,8 +126,6 @@ public class HelloController {
         fxmlLoader.setLocation(getClass().getResource("todoItemDialog.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
-
-
         } catch(IOException e) {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
@@ -127,12 +133,21 @@ public class HelloController {
         }
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-
         Optional<ButtonType> result = dialog.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK) {
             DialogController controller = fxmlLoader.getController();
             TodoItem newItem = controller.processResult();
-            todoListView.getSelectionModel().select(newItem);
+
+            if(newItem != null) {
+                todoListView.getSelectionModel().select(newItem);
+            }else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Could not create new item");
+                alert.setContentText("Please enter a valid description");
+                alert.showAndWait();
+
+            }
             System.out.println("OK pressed");
         } else {
             System.out.println("Cancel pressed");
